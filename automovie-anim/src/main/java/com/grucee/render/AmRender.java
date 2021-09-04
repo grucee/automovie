@@ -33,7 +33,7 @@ public class AmRender {
         //从用户空间到设备空间无变换
         renderer.setTransform(new AffineTransform());
         //待研究
-        renderer.setDoubleBuffered(false);
+        renderer.setDoubleBuffered(true);
         //设置长宽高
         renderer.updateOffScreen(width, height);
         //清空之前的内容

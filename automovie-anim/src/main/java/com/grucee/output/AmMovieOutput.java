@@ -3,18 +3,13 @@ package com.grucee.output;
 import com.grucee.util.ConvertUtils;
 import com.grucee.util.LogUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
-import java.awt.image.DataBufferInt;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import javax.imageio.ImageIO;
+import java.awt.image.*;
+import java.io.*;
 import java.util.List;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 输出渲染后的图像到视频
@@ -43,8 +38,8 @@ public class AmMovieOutput {
      */
     public void start() throws IOException {
         //step-1:启动ffmpeg
-        String cmd = "ffmpeg -y -f rawvideo -s " + this.width + "x" + this.height +
-                " -pix_fmt abgr -r 15 -i - -an -vcodec libx264 -pix_fmt yuv420p " + this.outputPath;
+        String cmd = "cmd.exe /C ffmpeg -y -f rawvideo -s " + this.width + "x" + this.height +
+                " -pix_fmt abgr -r 15 -i pipe: -an -vcodec libx264 -pix_fmt yuv420p " + this.outputPath;
         LogUtils.log("开始执行命令:\n" + cmd);
         this.process = Runtime.getRuntime().exec(cmd);
 
@@ -77,28 +72,41 @@ public class AmMovieOutput {
         });
     }
 
+    public void writeFrame(BufferedImage frame) throws IOException {
+        writeFrame(frame, null);
+    }
+
     /**
      * 写入一帧
      * @param frame
      */
-    public void writeFrame(BufferedImage frame) throws IOException {
+    public void writeFrame(BufferedImage frame, String imageName) throws IOException {
+        if (StringUtils.isNotEmpty(imageName)) {
+            ImageIO.write(frame, "png", new File(imageName));
+        }
+
+        int width = frame.getWidth();
+        int height = frame.getHeight();
+
         //step-1: 获取像素数据
         byte[] data;
         int type = frame.getType();
-        DataBuffer dataBuffer = frame.getData().getDataBuffer();
+        Raster raster = frame.getData();
         switch (type) {
             case BufferedImage.TYPE_4BYTE_ABGR:
             case BufferedImage.TYPE_4BYTE_ABGR_PRE:
-                data = ((DataBufferByte)dataBuffer).getData();
+                data = (byte[])raster.getDataElements(0, 0, width, height, null);
                 break;
             case BufferedImage.TYPE_INT_ARGB:
             case BufferedImage.TYPE_INT_ARGB_PRE:
-                data = ConvertUtils.itoabgr(((DataBufferInt)dataBuffer).getData());
+                int[] ints = (int[])raster.getDataElements(0, 0, width, height, null);
+                data = ConvertUtils.itoabgr(ints);
                 break;
             default:
                 throw new RuntimeException("unsupported BufferedImage type:" + type);
         }
 
+        LogUtils.log("数据量大小:" + data.length);
         //step-2: 该帧数据写入到ffmpeg
         OutputStream outputStream = this.process.getOutputStream();
         BufferedOutputStream bo = new BufferedOutputStream(outputStream);

@@ -21,11 +21,10 @@ public class Main {
         AmScene scene = new AmScene(sceneWidth, sceneHeight);
 
         //step-2:构造元素
-        AmRect rect = new AmRect(50, 50);
-        rect.translate(50, 50);
+        AmRect rect = new AmRect(100, 100);
+        rect.translate(5, 5);
 
-        AmSVG svg = new AmSVG("file:/F:/MG/svgs/colorful/01.svg");
-        svg.scale(0.5, 0.5);
+        AmSVG svg = new AmSVG("file:/F:/MG/svgs/colorful/02.svg");
         svg.translate(100, 100);
 
         //step-3: 向场景中添加元素
@@ -41,6 +40,7 @@ public class Main {
         output.start();
         for (int i = 0; i < 100; i++) {
             rect.translate(1, 1);
+
             BufferedImage sceneImage = render.render(scene);
             output.writeFrame(sceneImage);
         }

@@ -38,8 +38,8 @@ public class AmMovieOutput {
      */
     public void start() throws IOException {
         //step-1:启动ffmpeg
-        String cmd = "cmd.exe /C ffmpeg -y -f rawvideo -s " + this.width + "x" + this.height +
-                " -pix_fmt abgr -r 15 -i pipe: -an -vcodec libx264 -pix_fmt yuv420p " + this.outputPath;
+        String cmd = "ffmpeg -y -f rawvideo -s " + this.width + "x" + this.height +
+                " -pix_fmt abgr -r 25 -i pipe: -an -vcodec libx264 -pix_fmt yuv420p " + this.outputPath;
         LogUtils.log("开始执行命令:\n" + cmd);
         this.process = Runtime.getRuntime().exec(cmd);
 
@@ -106,7 +106,6 @@ public class AmMovieOutput {
                 throw new RuntimeException("unsupported BufferedImage type:" + type);
         }
 
-        LogUtils.log("数据量大小:" + data.length);
         //step-2: 该帧数据写入到ffmpeg
         OutputStream outputStream = this.process.getOutputStream();
         BufferedOutputStream bo = new BufferedOutputStream(outputStream);

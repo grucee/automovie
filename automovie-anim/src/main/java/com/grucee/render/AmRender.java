@@ -1,5 +1,6 @@
 package com.grucee.render;
 
+import com.grucee.coordinate.CoordinateSystem;
 import com.grucee.gobject.AmScene;
 import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
 import org.apache.batik.gvt.renderer.ImageRenderer;
@@ -30,8 +31,9 @@ public class AmRender {
         ImageRenderer renderer = rendererFactory.createStaticImageRenderer();
         //待渲染的场景
         renderer.setTree(scene.getGraphicsNode());
-        //从用户空间到设备空间无变换
-        renderer.setTransform(new AffineTransform());
+        //从用户空间到设备空间的变换
+        CoordinateSystem coordinateSystem = AmScene.Coordinater.getCoordinateSystem();
+        renderer.setTransform(coordinateSystem.getViewTransform());
         //待研究
         renderer.setDoubleBuffered(true);
         //设置长宽高

@@ -33,4 +33,6 @@ public interface Gobject {
      * @param dx
      */
     void rotate(double dx);
+
+    //https://blog.csdn.net/xieyaa/article/details/2933715 淡入淡出
 }

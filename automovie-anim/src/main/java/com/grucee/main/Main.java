@@ -16,22 +16,23 @@ public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         //step-0:参数调整区域
-        int sceneWidth = 900;
-        int sceneHeight = 600;
-        String inputSvgPath = "file:/F:/MG/svgs/colorful/02.svg";
-        String outputMoviePath = "F:/MG/svgs/colorful/01.mp4";
+        int sceneWidth = 1800;
+        int sceneHeight = 1200;
+        String inputSvgPath = "file:/F:/MG/svgs/colorful/01.svg";
+        String outputMoviePath = "F:/MG/svgs/colorful/out.mp4";
+        String outputImagePath = "F:/MG/svgs/colorful/out.png";
 
         //step-1:构造场景
         AmScene scene = new AmScene(sceneWidth, sceneHeight);
 
         //step-2:构造元素
         AmRect rect = new AmRect(100, 100);
-        rect.scale(1.1,1.1);
-        rect.translate(5, 5);
+        //rect.scale(1.1,1.1);
+        //rect.translate(50, 50);
 
         AmSVG svg = new AmSVG(inputSvgPath);
-        svg.scale(0.5, 0.5);
-        svg.translate(100, 100);
+        //svg.scale(0.5, 0.5);
+        //svg.translate(100, 100);
 
         //step-3: 向场景中添加元素
         scene.add(rect);
@@ -45,11 +46,13 @@ public class Main {
         output.start();
         for (int i = 0; i < 100; i++) {
             rect.translate(1, 1);
-            //rect.rotate(Math.PI / 90);
             svg.translate(2, 2);
-            //svg.rotate(Math.PI / 90);
             BufferedImage sceneImage = render.render(scene);
-            output.writeFrame(sceneImage);
+            if (i == 0) {
+                output.writeFrame(sceneImage, outputImagePath);
+            } else {
+                output.writeFrame(sceneImage);
+            }
         }
         output.stop();
     }

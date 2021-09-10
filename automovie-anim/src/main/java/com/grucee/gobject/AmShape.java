@@ -1,8 +1,6 @@
 package com.grucee.gobject;
 
-import org.apache.batik.gvt.FillShapePainter;
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.ShapeNode;
+import org.apache.batik.gvt.*;
 
 import java.awt.*;
 
@@ -35,5 +33,70 @@ public class AmShape extends AbsGobject{
     @Override
     public GraphicsNode getGraphicsNode() {
         return shapeNode;
+    }
+
+    /**
+     * 设置填充
+     * @param fillPaint
+     */
+    public void setFill(Paint fillPaint) {
+        //step-1:创建FillShapePainter
+        FillShapePainter newSP = new FillShapePainter(this.shapeNode.getShape());
+        newSP.setPaint(fillPaint);
+
+        //step-2:设置到ShapeNode上
+        ShapePainter oldSP = this.shapeNode.getShapePainter();
+        if (oldSP == null || oldSP instanceof FillShapePainter) {
+            //没设置或只设置了填充，则直接覆盖
+            this.shapeNode.setShapePainter(newSP);
+        } else if (oldSP instanceof StrokeShapePainter) {
+            //设置了边框，则将边框和填充组合起来
+            CompositeShapePainter csp = new CompositeShapePainter(this.shapeNode.getShape());
+            csp.addShapePainter(oldSP);
+            csp.addShapePainter(newSP);
+            this.shapeNode.setShapePainter(csp);
+        } else if (oldSP instanceof CompositeShapePainter) {
+            //直接添加到末尾
+            CompositeShapePainter csp = (CompositeShapePainter)oldSP;
+            csp.addShapePainter(newSP);
+        } else {
+            throw new RuntimeException("unknown ShapePainter:" + oldSP.getClass());
+        }
+    }
+
+
+    /**
+     * 设置边框
+     * @param stokePaint
+     */
+    public void setStroke(float width, Paint stokePaint) {
+        Stroke stroke = new BasicStroke(width);
+        this.setStroke(stroke, stokePaint);
+    }
+
+    private void setStroke(Stroke stroke, Paint stokePaint) {
+        //step-1:创建StrokeShapePainter
+        StrokeShapePainter newSP = new StrokeShapePainter(this.shapeNode.getShape());
+        newSP.setStroke(stroke);
+        newSP.setPaint(stokePaint);
+
+        //step-2:设置到ShapeNode上
+        ShapePainter oldSP = this.shapeNode.getShapePainter();
+        if (oldSP == null || oldSP instanceof StrokeShapePainter) {
+            //没设置或只设置了填充，则直接覆盖
+            this.shapeNode.setShapePainter(newSP);
+        } else if (oldSP instanceof FillShapePainter) {
+            //设置了边框，则将边框和填充组合起来
+            CompositeShapePainter csp = new CompositeShapePainter(this.shapeNode.getShape());
+            csp.addShapePainter(oldSP);
+            csp.addShapePainter(newSP);
+            this.shapeNode.setShapePainter(csp);
+        } else if (oldSP instanceof CompositeShapePainter) {
+            //直接添加到末尾
+            CompositeShapePainter csp = (CompositeShapePainter)oldSP;
+            csp.addShapePainter(newSP);
+        } else {
+            throw new RuntimeException("unknown ShapePainter:" + oldSP.getClass());
+        }
     }
 }

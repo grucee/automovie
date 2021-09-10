@@ -23,28 +23,13 @@ public class CoordinateSystem {
      * 当前坐标系到设备空间坐标系对应的转换矩阵
      */
     private AffineTransform viewTransform = new AffineTransform();
-    /**
-     * 当前坐标系x轴长度
-     */
-    private final double xUnits = 100.0;
-    /**
-     * 当前坐标系y轴长度
-     */
-    private double yUnits;
-    /**
-     * 当前坐标系1个单位对应外部设备空间的像素数
-     */
-    private double pixsPerUnit;
+
     public CoordinateSystem(int width, int height) {
         this.devWidth = width;
         this.devHeight = height;
 
         //确定本坐标系到设备空间坐标系的转换矩阵
         this.viewTransform.translate(width / 2.0, height / 2.0);
-
-        //确定本坐标系的坐标范围
-        this.pixsPerUnit = width / this.xUnits;
-        this.yUnits = height / this.pixsPerUnit;
     }
 
     public AffineTransform getViewTransform() {

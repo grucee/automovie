@@ -1,11 +1,13 @@
 package com.grucee.main;
 
+import com.grucee.gobject.AmPoint;
 import com.grucee.gobject.AmRect;
 import com.grucee.gobject.AmSVG;
 import com.grucee.gobject.AmScene;
 import com.grucee.output.AmMovieOutput;
 import com.grucee.render.AmRender;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -26,16 +28,18 @@ public class Main {
         AmScene scene = new AmScene(sceneWidth, sceneHeight);
 
         //step-2:构造元素
-        AmRect rect = new AmRect(100, 100);
-        //rect.scale(1.1,1.1);
-        //rect.translate(50, 50);
+        AmRect rect = new AmRect(200, 200);
+        rect.setFill(Color.YELLOW);
+        rect.setStroke(10.0f, Color.BLUE);
+
+        AmPoint point = new AmPoint();
+        point.setFill(Color.RED);
 
         AmSVG svg = new AmSVG(inputSvgPath);
-        //svg.scale(0.5, 0.5);
-        //svg.translate(100, 100);
 
         //step-3: 向场景中添加元素
         scene.add(rect);
+        scene.add(point);
         scene.add(svg);
 
         //step-4:渲染场景

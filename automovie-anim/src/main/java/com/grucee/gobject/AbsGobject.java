@@ -24,7 +24,7 @@ public abstract class AbsGobject implements Gobject {
         getTransform().rotate(dx);
     }
 
-    private AffineTransform getTransform() {
+    protected AffineTransform getTransform() {
         AffineTransform trans = getGraphicsNode().getTransform();
         if (trans == null) {
             trans = new AffineTransform();

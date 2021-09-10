@@ -14,7 +14,7 @@ public class AmRect extends AmShape{
      * @param h
      */
     public AmRect(float w, float h) {
-        super(new Rectangle2D.Float(0, 0, w, h));
+        super(new Rectangle2D.Double(-w/2.0, -h/2.0, w, h));
     }
 
     /**
@@ -23,6 +23,6 @@ public class AmRect extends AmShape{
      * @param h
      */
     public AmRect(float w, float h, float rx, float ry) {
-        super(new RoundRectangle2D.Float(0, 0, w, h, rx*2, ry*2));
+        super(new RoundRectangle2D.Double(-w/2.0, -h/2.0, w, h, rx*2, ry*2));
     }
 }

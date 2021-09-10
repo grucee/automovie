@@ -32,8 +32,7 @@ public class AmRender {
         //待渲染的场景
         renderer.setTree(scene.getGraphicsNode());
         //从用户空间到设备空间的变换
-        CoordinateSystem coordinateSystem = AmScene.Coordinater.getCoordinateSystem();
-        renderer.setTransform(coordinateSystem.getViewTransform());
+        renderer.setTransform(new AffineTransform());
         //待研究
         renderer.setDoubleBuffered(true);
         //设置长宽高
@@ -55,6 +54,21 @@ public class AmRender {
          * step-4:释放资源
          */
         renderer.dispose();
-        return sceneImage;
+
+        /**
+         * step-5:设置背景颜色
+         */
+        BufferedImage outImage = new BufferedImage(width, height, sceneImage.getType());
+        Graphics2D g2d = outImage.createGraphics();
+        //设置渲染参数
+        g2d.setRenderingHints(scene.getRenderingHints());
+        g2d.setPaint(scene.getBackground());
+        g2d.fillRect(0, 0, width, height);
+        //拷贝图像
+        g2d.drawImage(sceneImage, null, 0, 0);
+        //释放资源
+        g2d.dispose();
+
+        return outImage;
     }
 }
